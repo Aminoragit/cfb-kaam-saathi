@@ -93,14 +93,14 @@ python3 -m http.server --directory docs 8123
 ## How it was tested
 
 Tested end to end in headless Chromium (Playwright) against the local copy:
-31 checks, all passing — profile save, all six scheme verdicts (including edge
+39 checks, all passing — profile save, all six scheme verdicts (including edge
 cases: age 72 → PM-JAY match, PM-SYM does not fit; age 12 → e-Shram does not
 fit), add/edit/delete log entries, sample week, monthly totals (₹4,400 agreed,
 ₹800 still owed in the test data), 7-day chart, skill matching with the user's
-own rate (₹500/day → ₹3,000 for 6 days), CSV export, JSON backup and restore,
-full wipe, localStorage persistence across reloads, zero external network
-requests, zero console errors. Also checked at 390px width (no horizontal
-overflow).
+own rate (₹500/day → ₹3,000 for 6 days), CSV export, JSON backup, wipe and
+restore, invalid input rejected, localStorage persistence across reloads, zero
+external network requests, zero console errors. Also checked at 390px width (no
+horizontal overflow).
 
 ## Project layout
 
@@ -117,8 +117,7 @@ README.md      — this file
 
 - Live on GitHub Pages (see link above).
 - Demo video (2–3 minutes, real screen recording with captions):
-  `video/kaam-saathi-demo.mp4` in the submission folder; upload step is with the
-  entrant (see `SUBMISSION.md` in the project folder).
+  `video/kaam-saathi-demo.mp4` in this repo.
 - Submission is made by the entrant through the GitHub structured form on
   https://codeforindia.org/hackathon — not by this repository.
 
