@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kaam Saathi — Work &amp; Benefits Companion</title>
+<meta name="description" content="A free companion for informal-sector workers in India: keep a daily work and pay log, see what you are owed, and check which government schemes you may be able to use. All data stays in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231e6b3a'/%3E%3Ctext x='16' y='23' font-size='18' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <h1>Kaam Saathi</h1>
+    <p class="tagline">Work &amp; benefits companion for informal-sector workers in India</p>
+  </div>
+</header>
+
+<nav class="tabs wrap" aria-label="Sections">
+  <button class="tab active" data-tab="log" type="button">Work log</button>
+  <button class="tab" data-tab="money" type="button">Money</button>
+  <button class="tab" data-tab="benefits" type="button">Benefits</button>
+  <button class="tab" data-tab="skills" type="button">Skills &amp; work</button>
+  <button class="tab" data-tab="profile" type="button">My details</button>
+</nav>
+
+<main class="wrap">
+
+  <div id="sample-banner" class="banner sample hidden">
+    <strong>Sample week loaded.</strong> These entries are examples only, so you can see how the app works.
+    <button id="remove-sample" type="button">Remove sample entries</button>
+  </div>
+
+  <div id="notice" class="banner hidden" role="status"></div>
+
+  <!-- ============ WORK LOG ============ -->
+  <section id="tab-log" class="panel">
+    <h2>Today's work</h2>
+    <p>Write down each day's work, hours and pay. The app adds it up for you, and shows money you are still owed.</p>
+
+    <form id="entry-form" class="card">
+      <input type="hidden" id="edit-id" value="">
+      <div class="grid">
+        <label>Date
+          <input type="date" id="f-date" required>
+        </label>
+        <label>What work did you do?
+          <select id="f-work" required>
+            <option value="Construction work">Construction work</option>
+            <option value="Domestic work">Domestic work (cleaning, cooking, care)</option>
+            <option value="Street vending">Street vending</option>
+            <option value="Farm work">Farm work</option>
+            <option value="Delivery / driving">Delivery / driving</option>
+            <option value="Artisan / craft work">Artisan / craft work</option>
+            <option value="Tailoring">Tailoring</option>
+            <option value="Cleaning / sanitation">Cleaning / sanitation</option>
+            <option value="Loading / helper work">Loading / helper work</option>
+            <option value="Other work">Other work</option>
+          </select>
+        </label>
+        <label>Hours worked
+          <input type="number" id="f-hours" min="0" max="24" step="0.5" placeholder="e.g. 8" required>
+        </label>
+        <label>Pay agreed for the day (₹)
+          <input type="number" id="f-earned" min="0" step="1" placeholder="e.g. 500" required>
+        </label>
+        <label>Pay actually received (₹)
+          <input type="number" id="f-received" min="0" step="1" placeholder="e.g. 500" required>
+        </label>
+        <label>Who paid you? (optional)
+          <input type="text" id="f-payer" maxlength="80" placeholder="e.g. contractor name, shop name">
+        </label>
+      </div>
+      <label class="full">Note (optional)
+        <input type="text" id="f-note" maxlength="140" placeholder="e.g. half day, rain stopped work">
+      </label>
+      <div class="row">
+        <button class="btn primary" type="submit" id="save-entry">Save this day</button>
+        <button class="btn" type="button" id="cancel-edit" hidden>Cancel edit</button>
+      </div>
+      <p class="hint" id="form-hint">If you were paid less than agreed, the unpaid part shows under Money as "still owed".</p>
+    </form>
+
+    <h3>Your days</h3>
+    <div class="row between">
+      <p class="muted" id="entries-count"></p>
+      <div class="row">
+        <button class="btn" type="button" id="load-sample">Load a sample week</button>
+        <button class="btn" type="button" id="export-csv">Download as CSV</button>
+      </div>
+    </div>
+    <table class="entries">
+      <thead>
+        <tr><th>Date</th><th>Work</th><th>Hours</th><th>Agreed ₹</th><th>Received ₹</th><th>Still owed ₹</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody id="entries-body"></tbody>
+    </table>
+    <p class="muted" id="no-entries">No days saved yet. Add your first day above, or load a sample week to see how it looks.</p>
+  </section>
+
+  <!-- ============ MONEY ============ -->
+  <section id="tab-money" class="panel hidden">
+    <h2>Money</h2>
+    <p>Totals are worked out from the days you saved. Nothing here is guessed — if you add no days, the totals are zero.</p>
+    <div class="cards">
+      <div class="stat"><span class="stat-num" id="stat-earned">₹0</span><span class="stat-label">Agreed pay this month</span></div>
+      <div class="stat"><span class="stat-num" id="stat-received">₹0</span><span class="stat-label">Received this month</span></div>
+      <div class="stat warn"><span class="stat-num" id="stat-owed">₹0</span><span class="stat-label">Still owed to you</span></div>
+      <div class="stat"><span class="stat-num" id="stat-days">0</span><span class="stat-label">Days worked this month</span></div>
+      <div class="stat"><span class="stat-num" id="stat-avg">₹0</span><span class="stat-label">Average pay per day worked</span></div>
+      <div class="stat"><span class="stat-num" id="stat-week">₹0</span><span class="stat-label">Received in the last 7 days</span></div>
+    </div>
+
+    <h3>Last 7 days — pay received</h3>
+    <div id="chart" class="chart" aria-label="Bar chart of pay received in the last 7 days"></div>
+    <p class="muted" id="chart-note"></p>
+
+    <h3>Things to follow up</h3>
+    <ul id="followups" class="followups"></ul>
+
+    <h3>Your records</h3>
+    <p>Your records live only in this browser, on this device. You can keep a copy or wipe them.</p>
+    <div class="row">
+      <button class="btn" type="button" id="export-json">Download a backup (JSON)</button>
+      <label class="btn file-btn">Load a backup (JSON)
+        <input type="file" id="import-json" accept=".json,application/json" hidden>
+      </label>
+      <button class="btn danger" type="button" id="wipe-all">Delete everything</button>
+    </div>
+  </section>
+
+  <!-- ============ BENEFITS ============ -->
+  <section id="tab-benefits" class="panel hidden">
+    <h2>Benefits — which schemes may fit you?</h2>
+    <p>Answer the questions under <strong>My details</strong> and this page checks six government schemes against your answers. It can only say "looks like a match", "check" or "does not fit" — it cannot enrol you, and only the official office or website can confirm. Every amount below was checked against the official scheme page on 10 November 2026. See <a href="#sources">Sources</a> at the bottom of this page.</p>
+    <div class="row">
+      <button class="btn" type="button" id="goto-profile">Fill in my details first</button>
+      <span class="muted" id="checker-status"></span>
+    </div>
+    <div id="scheme-list"></div>
+
+    <h3 id="sources">Sources — where each fact comes from</h3>
+    <ul class="sources">
+      <li>e-Shram — Ministry of Labour &amp; Employment, <a href="https://eshram.gov.in/" target="_blank" rel="noopener">eshram.gov.in</a>. Launched 26 August 2021. Free registration; age 16 or above; unorganised worker; not an EPFO or ESIC member; not an income-tax payer. 12-digit Universal Account Number (UAN). 31.89 crore registrations as of 18 August 2026 (Press Information Bureau, Government of India).</li>
+      <li>PM-SYM (Pradhan Mantri Shram Yogi Maandhan) — <a href="https://maandhan.in/" target="_blank" rel="noopener">maandhan.in</a>. Age 18–40; monthly income ₹15,000 or less; not EPFO/ESIC/NPS member; not an income-tax payer. Assured pension of ₹3,000 a month after age 60. Monthly contribution ₹55–₹200 by entry age, matched by the government. Over 54 lakh enrolled as of 29 July 2026 (Press Information Bureau).</li>
+      <li>Ayushman Bharat PM-JAY — <a href="https://pmjay.gov.in/" target="_blank" rel="noopener">pmjay.gov.in</a>. Health cover of ₹5 lakh per family per year for hospital treatment, cashless at empanelled hospitals. Eligibility follows the SECC 2011 list; all citizens aged 70 and above are covered. Check your name at <a href="https://beneficiary.nha.gov.in/" target="_blank" rel="noopener">beneficiary.nha.gov.in</a> or call 14555.</li>
+      <li>PMSBY (accident cover) and PMJJBY (life cover) — <a href="https://jansuraksha.gov.in/" target="_blank" rel="noopener">jansuraksha.gov.in</a>. PMSBY: ₹20 a year, age 18–70, ₹2 lakh for accidental death or full disability, ₹1 lakh for partial disability. PMJJBY: ₹436 a year, entry age 18–50, ₹2 lakh life cover on death from any cause. Both need a bank or post office account; cover runs 1 June to 31 May.</li>
+      <li>PM Vishwakarma — <a href="https://pmvishwakarma.gov.in/" target="_blank" rel="noopener">pmvishwakarma.gov.in</a>. For artisans in 18 listed traditional trades, age 18 or above, self-employed in the unorganised sector. Toolkit incentive of ₹15,000; collateral-free loans up to ₹1 lakh (18 months) and then up to ₹2 lakh (30 months) at 5% interest. Apply through a Common Service Centre (CSC).</li>
+      <li>Size of the problem — Periodic Labour Force Survey / Economic Survey 2022–23: more than 90% of India's workforce is informally employed. e-Shram registrations: 31.89 crore (August 2026). PM-SYM enrolment: about 54 lakh (July 2026).</li>
+    </ul>
+    <p class="muted">Scheme rules can change. Before you pay anyone or hand over documents, check the official page linked above or ask at a Common Service Centre. Registration on e-Shram is free — nobody should charge you for it.</p>
+  </section>
+
+  <!-- ============ SKILLS ============ -->
+  <section id="tab-skills" class="panel hidden">
+    <h2>Skills &amp; work</h2>
+    <p>Tick the things you can do. The app shows which kinds of work use those skills, and what a week of that work would pay <strong>at the daily rate you set yourself</strong>. No rates are filled in for you — the numbers come only from your own entries and your own rates.</p>
+
+    <h3>1. What can you do?</h3>
+    <div id="skill-list" class="chips"></div>
+
+    <h3>2. Your daily rate for each kind of work (₹ per day)</h3>
+    <p class="muted">Leave blank any work you do not do. These are your rates, not official rates.</p>
+    <div id="rate-list" class="grid rates"></div>
+
+    <h3>3. Work that fits your skills</h3>
+    <div id="skill-matches"></div>
+  </section>
+
+  <!-- ============ PROFILE ============ -->
+  <section id="tab-profile" class="panel hidden">
+    <h2>My details</h2>
+    <p>These answers drive the benefits check. They stay in this browser only — nothing is sent anywhere. Fill in what you know; leave the rest blank.</p>
+    <form id="profile-form" class="card">
+      <div class="grid">
+        <label>Name (optional)
+          <input type="text" id="p-name" maxlength="60" placeholder="Your name">
+        </label>
+        <label>Age (years)
+          <input type="number" id="p-age" min="10" max="100" step="1" placeholder="e.g. 34">
+        </label>
+        <label>Main work
+          <select id="p-work">
+            <option value="">— choose —</option>
+            <option value="Construction work">Construction work</option>
+            <option value="Domestic work">Domestic work</option>
+            <option value="Street vending">Street vending</option>
+            <option value="Farm work">Farm work</option>
+            <option value="Delivery / driving">Delivery / driving</option>
+            <option value="Artisan / craft work">Artisan / craft work</option>
+            <option value="Tailoring">Tailoring</option>
+            <option value="Cleaning / sanitation">Cleaning / sanitation</option>
+            <option value="Loading / helper work">Loading / helper work</option>
+            <option value="Other work">Other work</option>
+          </select>
+        </label>
+        <label>Your monthly income
+          <select id="p-income">
+            <option value="">— choose —</option>
+            <option value="under10000">Under ₹10,000 a month</option>
+            <option value="10000-15000">₹10,000 – ₹15,000 a month</option>
+            <option value="over15000">Over ₹15,000 a month</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </label>
+        <label>Do you have a bank or post office account?
+          <select id="p-bank">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <label>Do you have Aadhaar?
+          <select id="p-aadhaar">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <label>Are you registered on e-Shram already?
+          <select id="p-eshram">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </label>
+        <label>Do you get PF (EPFO) or ESIC from an employer?
+          <select id="p-formal">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <label>Do you pay income tax?
+          <select id="p-tax">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <label>Is your work one of the 18 traditional artisan trades? (carpenter, tailor, potter, blacksmith, goldsmith, mason, cobbler, weaver, and others)
+          <select id="p-artisan">
+            <option value="">— choose —</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="unknown">Not sure</option>
+          </select>
+        </label>
+      </div>
+      <div class="row">
+        <button class="btn primary" type="submit">Save my details</button>
+      </div>
+    </form>
+    <p class="muted">Privacy: this app has no account, no server and no tracking. Your details are stored only in this browser's local storage on your device. Use "Delete everything" under Money to wipe them.</p>
+  </section>
+
+</main>
+
+<footer class="wrap footer">
+  <p><strong>Kaam Saathi</strong> — built for the Code for a Billion Hackathon 2026, Challenge 09: Livelihood for the Uneducated. Open source (MIT). It is a record-keeping and information tool, not a government service. It cannot register you for any scheme and it never asks for your Aadhaar number, bank details or passwords.</p>
+  <p>Author: Seok Won Choi (Choi Seokwon) · <a href="https://github.com/Aminoragit/cfb-kaam-saathi" target="_blank" rel="noopener">GitHub repository</a></p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
