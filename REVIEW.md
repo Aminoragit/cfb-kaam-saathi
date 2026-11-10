@@ -74,8 +74,9 @@ TODO/FIXME, "coming soon". **None found.** Copy is plain, concrete English.
 
 - No real users yet, so "proven impact" rests on the live deployment and the test
   evidence, not on usage data. The submission says this outright.
-- The AgentFoundry IDE step was not done: it needs the entrant's own account.
-  The project was built with standard tooling instead and published as required.
+- Entry withdrawn 10 Nov 2026: the hackathon's submission process requires
+  its official IDE, which the entrant does not use. No submission will be
+  made.
 - The demo video has captions only; no free text-to-speech voice was available on
   the machine without sign-in or payment.
 - The video was recorded against a local copy of the exact deployed files (the

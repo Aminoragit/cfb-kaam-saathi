@@ -89,10 +89,10 @@ video is a real recording of the live app, not staged stills.
 
 ## What is still open (for the entrant, not the judges)
 
-- ChatGPT polish pass on this text, the README and the video captions (flagged above).
-- Upload the demo video to YouTube as unlisted (or submit with the live link only —
-  the rules allow a live link instead of a video).
-- Sign up on AgentFoundry.me (the official IDE) with the entrant's own account and
-  create the project there, as the rules describe.
-- Submit through the GitHub structured form linked from
-  https://codeforindia.org/hackathon before the deadline.
+- ChatGPT polish pass on the README and the video captions, for the
+  portfolio copy (flagged above).
+- Entry withdrawn on 10 November 2026: the hackathon's submission process
+  requires its official IDE, which the entrant does not use. No submission
+  will be made through the GitHub structured form, and the demo video will
+  not be uploaded for this hackathon. The app stays live as a portfolio
+  piece.

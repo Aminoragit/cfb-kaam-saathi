@@ -121,10 +121,8 @@ README.md      — this file
 - Submission is made by the entrant through the GitHub structured form on
   https://codeforindia.org/hackathon — not by this repository.
 
-## A note on the official IDE
+## Entry status
 
-The hackathon's official IDE is AgentFoundry.me. Signing up there needs the
-entrant's own account, so this project was built with standard tooling instead
-and is published here as a public repo with a live deployment, as the rules
-require. The AgentFoundry step, and the final form submission, are for the
-entrant to complete.
+This entry was withdrawn on 10 November 2026: the hackathon's submission
+process requires its official IDE, which the entrant does not use. The app
+stays live here as a portfolio piece — a public repo with a live deployment.
